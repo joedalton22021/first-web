@@ -59,7 +59,43 @@ function render(){
  nav.innerHTML=`<button class="btn secondary" id="restart">Start over ↻</button><button class="btn primary" id="copy">Copy my order</button>`;
  }
  nav.querySelectorAll("button").forEach(b=>{b.addEventListener("click",()=>{
- if(b.id==="next"){if(state.step===1&&!state.name)return;if(state.step===2&&!state.drink)return;state.step=Math.min(4,state.step+1);render()}
+if(b.id==="next"){
+  if(state.step===1&&!state.name)return;
+  if(state.step===2&&!state.drink)return;
+
+  if(state.step===3){
+    b.disabled=true;
+    b.textContent="Sending your order...";
+
+    const body=new URLSearchParams({
+      name:state.name,
+      drink:state.drink,
+      sugar:state.sugar,
+      ice:state.ice
+    });
+
+    fetch(
+      "https://script.google.com/macros/s/AKfycbxzVnns7OXPwIFFfd2QR4vaI5L2BRF0JXhkXPRg2r73wcMlc87oB2ZMHimzJOnP9tWe4A/exec",
+      {
+        method:"POST",
+        mode:"no-cors",
+        body:body
+      }
+    ).then(()=>{
+      state.step=4;
+      render();
+    }).catch(()=>{
+      b.disabled=false;
+      b.textContent="Finish 🎀";
+      alert("Unable to send. Please try again.");
+    });
+
+    return;
+  }
+
+  state.step=Math.min(4,state.step+1);
+  render();
+}
  if(b.id==="back"){state.step=Math.max(0,state.step-1);render()}
  if(b.id==="restart"){state.step=0;state.name="";state.drink="";state.sugar="50% sugar";state.ice="Less ice";render()}
  if(b.id==="copy"){const text=`Women's Day drink order\\nName: ${state.name}\\nDrink: ${state.drink}\\nSugar: ${state.sugar}\\nIce: ${state.ice}`;if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>{b.textContent="Copied! ✓"}).catch(()=>prompt("Copy your order:",text));else prompt("Copy your order:",text)}
