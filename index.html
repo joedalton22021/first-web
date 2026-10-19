@@ -63,35 +63,70 @@ if(b.id==="next"){
   if(state.step===1&&!state.name)return;
   if(state.step===2&&!state.drink)return;
 
-  if(state.step===3){
-    b.disabled=true;
-    b.textContent="Sending your order...";
-
-    const body=new URLSearchParams({
-      name:state.name,
-      drink:state.drink,
-      sugar:state.sugar,
-      ice:state.ice
-    });
-
-    fetch(
-      "https://script.google.com/macros/s/AKfycbxzVnns7OXPwIFFfd2QR4vaI5L2BRF0JXhkXPRg2r73wcMlc87oB2ZMHimzJOnP9tWe4A/exec",
-      {
-        method:"POST",
-        mode:"no-cors",
-        body:body
-      }
-    ).then(()=>{
-      state.step=4;
-      render();
-    }).catch(()=>{
-      b.disabled=false;
-      b.textContent="Finish 🎀";
-      alert("Unable to send. Please try again.");
-    });
-
+if (state.step === 3) {
+  if (!state.name || !state.drink) {
+    alert("Please choose your name and drink first.");
     return;
   }
+
+  b.disabled = true;
+  b.textContent = "Sending your order...";
+
+  const params = new URLSearchParams({
+    name: state.name,
+    drink: state.drink,
+    sugar: state.sugar,
+    ice: state.ice
+  });
+
+  const scriptURL =
+    "https://script.google.com/macros/s/AKfycbxzVnns7OXPwIFFfd2QR4vaI5L2BRF0JXhkXPRg2r73wcMlc87oB2ZMHimzJOnP9tWe4A/exec";
+
+  // Gửi dữ liệu theo cách tương thích với Apps Script.
+  // Phản hồi được xác nhận qua callback trung gian bên dưới.
+  const callbackName =
+    "orderCallback_" + Date.now() + "_" +
+    Math.random().toString(36).slice(2);
+
+  const cleanup = () => {
+    delete window[callbackName];
+    const oldScript = document.getElementById(callbackName);
+    if (oldScript) oldScript.remove();
+  };
+
+  window[callbackName] = function (result) {
+    cleanup();
+
+    if (result && result.success) {
+      state.step = 4;
+      render();
+    } else {
+      b.disabled = false;
+      b.textContent = "Finish 🎀";
+      alert(
+        "The order could not be confirmed. Please try again."
+      );
+    }
+  };
+
+  const script = document.createElement("script");
+  script.id = callbackName;
+
+  params.set("callback", callbackName);
+
+  script.src = scriptURL + "?" + params.toString();
+  script.onerror = function () {
+    cleanup();
+    b.disabled = false;
+    b.textContent = "Finish 🎀";
+    alert(
+      "Unable to contact the order system. Please try again."
+    );
+  };
+
+  document.body.appendChild(script);
+  return;
+}
 
   state.step=Math.min(4,state.step+1);
   render();
