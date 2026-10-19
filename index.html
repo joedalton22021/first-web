@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff1f5">
+<title>October 20th · A Little Treat for You</title>
+<style>
+:root{--pink:#f6a9c5;--rose:#d95f8d;--cream:#fffaf2;--lav:#e9e1ff;--ink:#65465a;--mint:#e0f4e8}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 10% 5%,#ffe1ec 0,transparent 30%),radial-gradient(circle at 95% 80%,#e8e0ff 0,transparent 28%),var(--cream);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);display:flex;justify-content:center;padding:18px}
+main{width:min(100%,560px);align-self:center}.card{position:relative;background:#ffffffd9;border:2px solid #fff;border-radius:28px;padding:26px 22px;box-shadow:0 15px 45px #a85c7920;overflow:hidden}.sparkle{position:absolute;font-size:24px;opacity:.7}.s1{top:15px;right:20px}.s2{bottom:20px;left:15px}
+h1{font-size:clamp(28px,7vw,42px);line-height:1.12;margin:12px 0;color:#c34e7d}h2{font-size:25px;margin:8px 0 10px}p{line-height:1.55}.eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800;color:#b66a8a}.sub{color:#92778a}.progress{height:7px;border-radius:99px;background:#f5e6ed;overflow:hidden;margin:0 0 22px}.bar{height:100%;background:linear-gradient(90deg,#f5a9c4,#c6b4ff);width:20%;transition:width .25s}
+.btn{border:0;border-radius:15px;padding:13px 18px;font-weight:800;font-size:15px;cursor:pointer;transition:transform .15s,box-shadow .15s}.btn:active{transform:scale(.98)}.primary{background:linear-gradient(120deg,#e981a8,#c9b7ff);color:white;box-shadow:0 6px 15px #d78aa533}.secondary{background:#fff0f5;color:#a84d74}.nav{display:flex;gap:10px;margin-top:22px}.nav .btn{flex:1}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}.choice{background:#fff;border:1.5px solid #f0dce5;border-radius:16px;padding:13px 10px;text-align:left;color:var(--ink);cursor:pointer;font:inherit}.choice.selected{border-color:#d96c99;background:#fff0f6;box-shadow:0 0 0 2px #f8d4e2}.choice small{display:block;color:#a88a9b;font-size:12px;margin-top:4px}.fieldlabel{font-weight:800;margin:20px 0 8px;display:block}.drinklist{display:grid;grid-template-columns:1fr;gap:8px;max-height:44vh;overflow:auto;padding:2px}.drink{display:flex;align-items:center;gap:10px}.drink .choice{flex:1;padding:11px 12px}.emoji{font-size:23px}.note{font-size:12px;color:#987f91}.success{font-size:54px}.footer{text-align:center;font-size:12px;color:#a48a9b;margin:15px 0 0}.error{color:#b33;font-size:13px}.hidden{display:none!important}
+@media(min-width:500px){.card{padding:32px}.drinklist{grid-template-columns:1fr 1fr;max-height:none}}
+</style>
+</head>
+<body>
+<main>
+ <div class="progress"><div id="bar" class="bar"></div></div>
+ <section class="card">
+  <span class="sparkle s1">🌷</span><span class="sparkle s2">♡</span>
+  <div id="content"></div>
+  <div class="nav" id="nav"></div>
+ </section>
+ <div class="footer">Made with love for Walmart Shinwon · October 20th 💗</div>
+</main>
+<script>
+const names=["Helen","Elena","Jisoo","Rosie","Daisy","Jessica","Claire","Chloe","Dina","Zoe","Lillie","Judy"];
+const drinks=[
+ ["☕","Salt Coffee","Coffee"],["🥛","Fresh Milk Coffee","Coffee"],["🧋","Bac Xiu / Salt Bac Xiu","Coffee"],
+ ["☕","Vietnamese Brown Coffee (Nâu)","Coffee"],["☕","Black Coffee (Đen)","Coffee"],["🍮","Caramel Phin Coffee","Coffee"],["🍫","Chocolate Phin Coffee","Coffee"],
+ ["🍫","Salt Cocoa","Cocoa"],["🍫","Iced Cocoa","Cocoa"],
+ ["🍵","Salt Matcha","Matcha"],["🍵","Matcha Latte","Matcha"],["🍮","Caramel Matcha","Matcha"],
+ ["🥭","Soursop Tea (Trà mãng cầu)","Tea"],["🧀","Jasmine Tea with Cheese Foam","Tea"],["🍋","Passion Fruit Tea with Milk Foam","Tea"],["🍊","Lime & Kumquat Tea","Tea"],["🍋","Passion Fruit Yogurt Tea","Tea"],
+ ["🍋","Yellow Lemon Cold Brew","Cold Brew"],["🍑","Apricot Cold Brew","Cold Brew"],["🍈","Mangosteen Cold Brew","Cold Brew"]
+];
+const state={step:0,name:"",drink:"",sugar:"50% sugar",ice:"Less ice"};
+const content=document.getElementById("content"),nav=document.getElementById("nav"),bar=document.getElementById("bar");
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function choose(field,value){state[field]=value;render()}
+function tile(value,field,extra=""){return `<button class="choice ${state[field]===value?'selected':''}" data-field="${field}" data-value="${esc(value)}">${extra}${esc(value)}</button>`}
+function render(){
+ bar.style.width=((state.step+1)*20)+"%"; nav.innerHTML="";
+ if(state.step===0){
+ content.innerHTML=`<div class="eyebrow">A little celebration · 20 October</div><div style="font-size:54px;margin-top:16px">🌸 🧋 🌸</div><h1>Happy Vietnamese Women's Day!</h1><h2 style="font-size:20px">To the lovely ladies of Walmart Shinwon 💗</h2><p>Wishing you a day filled with happiness, smiles, and sweet little moments. You deserve all the love and appreciation today!</p><p class="sub">A little drink treat from Tony, made just for you.</p>`;
+ nav.innerHTML=`<button class="btn primary" id="next">Let's get started! →</button>`;
+ }else if(state.step===1){
+ content.innerHTML=`<div class="eyebrow">Step 1 of 4</div><h2>Who are you? 🌷</h2><p class="sub">Please choose your name.</p><div class="choices">${names.map(n=>tile(n,"name","🌸 ")).join("")}</div>`;
+ nav.innerHTML=`<button class="btn secondary" id="back">← Back</button><button class="btn primary" id="next" ${state.name?'':'disabled'}>Next →</button>`;
+ }else if(state.step===2){
+ const cats=["Coffee","Cocoa","Matcha","Tea","Cold Brew"];
+ content.innerHTML=`<div class="eyebrow">Step 2 of 4</div><h2>Choose your drink! 🧋</h2><p class="sub">Menu inspired by Đan Coffee. Pick one drink.</p>${cats.map(cat=>`<div class="fieldlabel">${cat}</div><div class="drinklist">${drinks.filter(d=>d[2]===cat).map(d=>`<button class="choice drink ${state.drink===d[1]?'selected':''}" data-field="drink" data-value="${esc(d[1])}"><span class="emoji">${d[0]}</span><span>${esc(d[1])}</span></button>`).join("")}</div>`).join("")}<p class="note">Some handwritten items at the bottom of the photo were unclear, so they are not included. No prices shown because some prices were difficult to read.</p>`;
+ nav.innerHTML=`<button class="btn secondary" id="back">← Back</button><button class="btn primary" id="next" ${state.drink?'':'disabled'}>Next →</button>`;
+ }else if(state.step===3){
+ content.innerHTML=`<div class="eyebrow">Step 3 of 4</div><h2>Make it your way! 🍓</h2><span class="fieldlabel">Sugar level</span><div class="choices">${["No sugar","30% sugar","50% sugar","70% sugar","100% sugar"].map(x=>tile(x,"sugar")).join("")}</div><span class="fieldlabel">Ice level</span><div class="choices">${["No ice","Less ice","Extra ice"].map(x=>tile(x,"ice")).join("")}</div>`;
+ nav.innerHTML=`<button class="btn secondary" id="back">← Back</button><button class="btn primary" id="next">Finish 🎀</button>`;
+ }else{
+ content.innerHTML=`<div class="success">💐</div><div class="eyebrow">Order preference saved on this device only</div><h1 style="font-size:34px">Thank you, ${esc(state.name)}!</h1><p>Thank you for choosing your drink! Please be patient — Tony will bring your drink to your desk very soon. 🫡</p><h2>Happy Vietnamese Women's Day! 💗</h2><div style="background:#fff0f6;border-radius:18px;padding:16px;text-align:left"><b>Your selection</b><p>🌸 Name: ${esc(state.name)}<br>🧋 Drink: ${esc(state.drink)}<br>🍬 Sugar: ${esc(state.sugar)}<br>🧊 Ice: ${esc(state.ice)}</p></div><p class="note">Please send your selection to Tony or connect this page to an online form/database to collect everyone's orders centrally.</p>`;
+ nav.innerHTML=`<button class="btn secondary" id="restart">Start over ↻</button><button class="btn primary" id="copy">Copy my order</button>`;
+ }
+ nav.querySelectorAll("button").forEach(b=>{b.addEventListener("click",()=>{
+ if(b.id==="next"){if(state.step===1&&!state.name)return;if(state.step===2&&!state.drink)return;state.step=Math.min(4,state.step+1);render()}
+ if(b.id==="back"){state.step=Math.max(0,state.step-1);render()}
+ if(b.id==="restart"){state.step=0;state.name="";state.drink="";state.sugar="50% sugar";state.ice="Less ice";render()}
+ if(b.id==="copy"){const text=`Women's Day drink order\\nName: ${state.name}\\nDrink: ${state.drink}\\nSugar: ${state.sugar}\\nIce: ${state.ice}`;if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>{b.textContent="Copied! ✓"}).catch(()=>prompt("Copy your order:",text));else prompt("Copy your order:",text)}
+ })});
+ content.querySelectorAll("[data-field]").forEach(b=>b.addEventListener("click",()=>choose(b.dataset.field,b.dataset.value)));
+}
+render();
+</script>
+</body>
+</html>
